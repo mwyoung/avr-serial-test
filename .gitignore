@@ -1,0 +1,7 @@
+*.sw*
+*.hex
+*.o
+*.obj
+*.d
+*.pdf
+*.png
