@@ -30,11 +30,13 @@ int main(){
     UCSR0C |= (1<<UCSZ00)|(1<<UCSZ01); //8-bit chars
     UBRR0H = (BAUD_PRESCALE >> 8); //load upper bits for baud rate
     UBRR0L = BAUD_PRESCALE; //load lower bits
-#endif
     stdout = &uart_str;
+#endif
 
     while(1){
+#ifdef SERIAL_DEBUG
         printf("%s:%d %f\n", "hello", count, (double)22/7);
+#endif
         count++;
         PORTB |= (1<<PB5); //turn on LED
         _delay_ms(1000);
