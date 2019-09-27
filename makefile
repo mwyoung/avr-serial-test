@@ -1,5 +1,5 @@
 SHELL		:= /bin/bash
-PRG			:= blink
+PRG			:= serial_test
 OBJ			:= $(PRG).o
 MCU_TARGET	:= atmega328p
 F_CPU		:= 16000000UL
@@ -8,9 +8,11 @@ OPTIMIZE	:= -O2
 BUILD_DIR	:= build-$(MCU_TARGET)
 
 override CFLAGS := -g -Wall $(OPTIMIZE) -mmcu=$(MCU_TARGET) -DF_CPU=$(F_CPU)
+
+#float adds ~1.5kB to code
 PRINTF_LIB_MIN = -Wl,-u,vprintf -lprintf_min
 PRINTF_LIB_FLOAT = -Wl,-u,vfprintf -lprintf_flt
-PRINTF_LIB = $(PRINTF_LIB_FLOAT)
+PRINTF_LIB = $(PRINTF_LIB_MIN)
 MATH_LIB = -lm
 LDFLAGS += $(PRINTF_LIB) $(MATH_LIB)
 #override LDFLAGS := -Wl,-Map,$(PRG).map
