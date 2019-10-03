@@ -12,7 +12,7 @@
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 #define SERIAL_DEBUG
 //note: serial sending could send extra bits as terminating chars
-//#define SERIAL_ECO_DEBUG //if commented has 1 second delay
+//#define SERIAL_ECHO_DEBUG //if commented has 1 second delay
 //#define PRINTF_LIB_FLOAT //adds ~1.5kB to code
 
 int uart_putchar(char c, FILE *stream){
@@ -24,14 +24,15 @@ int uart_putchar(char c, FILE *stream){
 FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
 
 int main(void){
-#ifndef SERIAL_ECO_DEBUG
+#ifndef SERIAL_ECHO_DEBUG
     uint8_t i;
+#else
+    char rcvByte;
 #endif
     uint16_t count = 0;
     DDRB = (1<<PB5); //set PB5 output for led
 
 #ifdef SERIAL_DEBUG
-    char rcvByte;
     UCSR0B |= (1<<RXEN0)|(1<<TXEN0);        //turn on tx/rx
     UCSR0C |= (1<<UCSZ00)|(1<<UCSZ01);      //8-bit chars
     UBRR0H = (BAUD_PRESCALE >> 8);          //load upper bits for baud rate
@@ -52,7 +53,7 @@ int main(void){
         count++;
         PORTB ^= (1<<PB5); //flip LED
 
-#ifdef SERIAL_ECO_DEBUG
+#ifdef SERIAL_ECHO_DEBUG
         while ((UCSR0A & (1<<RXC0))==0) {}; //wait for data
         rcvByte = UDR0;                     //put received byte in variable
         while ((UCSR0A & (1<<UDRE0))==0) {}; //wait until UDR is empty
