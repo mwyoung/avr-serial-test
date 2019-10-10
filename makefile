@@ -3,7 +3,6 @@ SRC			:= serial_test
 OBJ			:= $(SRC).o
 MCU_TARGET	:= atmega328p
 F_CPU		:= 16000000UL
-CC			:= avr-gcc
 OPTIMIZE	:= -O2
 SRC_DIR		:= .
 BUILD_DIR	:= build-$(MCU_TARGET)
@@ -11,7 +10,6 @@ LIBS		=
 
 #look in subdirectories for source
 #VPATH		=
-
 override CFLAGS := -g -Wall $(OPTIMIZE) -mmcu=$(MCU_TARGET) -DF_CPU=$(F_CPU)
 override LDFLAGS := -Wl,-Map,$(BUILD_DIR)/$(SRC).map
 
@@ -22,11 +20,11 @@ PRINTF_LIB = $(PRINTF_LIB_MIN)
 MATH_LIB = -lm
 LDFLAGS += $(PRINTF_LIB) $(MATH_LIB)
 
+CC			= avr-gcc
 OBJCOPY		= avr-objcopy
 OBJDUMP		= avr-objdump
 
-.PHONY: all clean
-all: $(SRC).elf lst text
+default: compile
 
 %.hex: %.obj
 	avr-objcopy -R .eeprom -O ihex $< $@
@@ -34,10 +32,16 @@ all: $(SRC).elf lst text
 $(BUILD_DIR)/%.obj: $(OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-program: $(BUILD_DIR)/$(SRC).hex | $(BUILD_DIR)
+program: $(BUILD_DIR) $(BUILD_DIR)/$(SRC).hex
 	avrdude -p $(MCU_TARGET) -c usbasp -e -U flash:w:$(BUILD_DIR)/$(SRC).hex
+	-mv $(SRC).o $(BUILD_DIR)
 
-compile: $(BUILD_DIR)/$(SRC).hex | $(BUILD_DIR)
+compile: $(BUILD_DIR) $(BUILD_DIR)/$(SRC).hex
+	-mv $(SRC).o $(BUILD_DIR)
+
+asm: $(BUILD_DIR) $(OBJ)
+	-mv $(OBJ) $(BUILD_DIR)
+	$(OBJDUMP) -DlSCw $(BUILD_DIR)/$(OBJ) > $(BUILD_DIR)/$(SRC).lst
 
 SERIAL_PORT	= $(shell ls /dev/ttyUSB* | head -n 1)
 COMM_PREF = .moserial.conf
@@ -48,6 +52,7 @@ serialcomm:
 $(BUILD_DIR):
 	-mkdir -p $(BUILD_DIR)
 
+.PHONY: clean
 clean:
 	-rm -f *.o *.hex *.obj *.d *.map $(BUILD_DIR)/*
 
