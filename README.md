@@ -1,4 +1,4 @@
-# serial\_test for AVR
+# AVR Serial Test
 
 This program is to test serial communication for AVR. It was tested on a Arduino Nano
 clone (with a CH340) on linux and a USBASP programmer.
@@ -21,6 +21,11 @@ possible to disconnect the 3.3V/5V jumper (and leave it connected to 1 pin). How
 may need to be disconnected when using SPI.
 
 To install, use the command `make program` to upload to the AVR board.
+
+Another optional requirement is the GUI  [moserial](https://wiki.gnome.org/action/show/Apps/Moserial),
+ which allows the serial communication to be read and sent at the same time. It can be
+launched with the command `make serialcomm` which also looks for the first device with the
+serial port starting with ttyUSB.
 
 ## Help From:
 [Avrfreaks - abcminiuser](https://www.avrfreaks.net/forum/tut-soft-using-usart-serial-communications).
