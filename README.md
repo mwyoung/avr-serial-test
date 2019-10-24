@@ -15,14 +15,14 @@ This example program uses an Arduino Nano, a USBASP v2.0, and a USB mini B cable
 serial communication).  Also required (for Linux) is makefile, avr-gcc, avrdude, and
 moserial.
 
-The wiring is using the 6 pin port connected to the USBASP (recommended is a 10 pin to 6
-pin connector), and the usb port connected to another USB on the computer.  It is also
+The wiring is using the 6 pin port connected to the USBASP (a 10 pin to 6 pin connector is
+recommended), and the usb port connected to another USB on the computer.  It is also
 possible to disconnect the 3.3V/5V jumper (and leave it connected to 1 pin). However, this
 may need to be disconnected when using SPI.
 
 To install, use the command `make program` to upload to the AVR board.
 
-Another optional requirement is the GUI  [moserial](https://wiki.gnome.org/action/show/Apps/Moserial),
+Another optional requirement is the GUI application [moserial](https://wiki.gnome.org/action/show/Apps/Moserial),
  which allows the serial communication to be read and sent at the same time. It can be
 launched with the command `make serialcomm` which also looks for the first device with the
 serial port starting with ttyUSB.
